@@ -1,6 +1,7 @@
+//8 pairs of colors to be used in the cards-grid
 let colorsArr = ["black", "black", "orange", "orange", "green", "green", "purple", "purple", "blue", "blue", "white", "white", "red", "red", "yellow", "yellow"];
 
-
+//initialize elements
 let startButton = document.getElementById("start-button");
 let row = document.getElementById("cards-grid");
 let score = document.getElementById("score");
@@ -8,6 +9,8 @@ let card;
 let image;
 let cardClicked;
 
+
+//called when startButton is pressed -- randomizes the colorsArr
 function shuffleArray(colorsArr) {
   for (var i = colorsArr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -26,15 +29,16 @@ let guessArr = [];
 
 
 function checkPair() {
+  //if the cardColoris the same in the two guesses and they are not the same card
+  //leave them "open", decrease the amount of unmatched cards, and reset the guesses
   if (
     guessArr.length === 2 &&
     guessArr[0].cardColor === guessArr[1].cardColor &&
     guessArr[0].cardClass != guessArr[1].cardClass) {
-    console.log("Yes");
     cardsLeft -= 2;
     guessArr = [];
     pairCounter = 0;
-
+    //check if all matched have been found, if so game is over
     if (cardsLeft === 0) {
       let message = document.createElement('div');
       message.setAttribute("id", "winner-message");
@@ -44,9 +48,12 @@ function checkPair() {
       row.appendChild(message);
 
     }
+
+    //cards don't match -> find divs whose classes match the ones that are in guessArr and make the picture visibile again ("close the card")
   } else {
     let i = document.querySelectorAll("div");
     pairCounter++;
+    //looping through all divs to find divs that match the cardClass inside objects inside the guess array
     for (let k of i) {
       if (k.classList === guessArr[0].cardClass || k.classList === guessArr[1].cardClass) {
         setTimeout(function () {
@@ -57,12 +64,10 @@ function checkPair() {
     }
     guessArr = [];
 
-    // Cards don't match
-    // Delay to show the cards for a short time before hiding them
   }
 }
 
-
+//add a click if there has been two clicks then the score goes up by one and we check to see if there is a pair
 
 function updateScore() {
   clickCounter++;
@@ -72,7 +77,7 @@ function updateScore() {
   }
 }
 
-
+//display all of the cards from the randomized colorArr
 function display() {
   let colors = shuffleArray(colorsArr);
   for (let i = 0; i < colors.length; i++) {
@@ -91,9 +96,9 @@ function display() {
     cardContainer.appendChild(card);
     row.appendChild(cardContainer);
 
-
+    // add event listener to each card. On click will check to make sure that no more than two cards are open
+    //,will set visibility of img to hidden ("Openeing the Card"), and update the score.
     card.addEventListener('click', function () {
-      console.log(pairCounter);
       if (pairCounter > 0) {
         return;
       } else {
@@ -108,9 +113,9 @@ function display() {
   }
 }
 
-
+//initializes the board
 startButton.addEventListener('click', display);
-
+//makes it so you can only create one board at a time
 startButton.addEventListener('click', function () {
   this.disabled = true;
 });
