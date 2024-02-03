@@ -18,6 +18,7 @@ function shuffleArray(colorsArr) {
   return colorsArr;
 }
 let cardsLeft = 16;
+let pairCounter = 0;
 let clickCounter = 0;
 let guessArr = [];
 
@@ -32,6 +33,7 @@ function checkPair() {
     console.log("Yes");
     cardsLeft -= 2;
     guessArr = [];
+    pairCounter = 0;
 
     if (cardsLeft === 0) {
       let message = document.createElement('div');
@@ -41,15 +43,15 @@ function checkPair() {
       message.appendChild(score);
       row.appendChild(message);
 
-      console.log("Game over");
     }
   } else {
     let i = document.querySelectorAll("div");
-    console.log(guessArr[1].cardClass);
+    pairCounter++;
     for (let k of i) {
       if (k.classList === guessArr[0].cardClass || k.classList === guessArr[1].cardClass) {
         setTimeout(function () {
           k.children[1].style.visibility = "visible";
+          pairCounter = 0;
         }, 1500);
       }
     }
@@ -63,7 +65,6 @@ function checkPair() {
 
 
 function updateScore() {
-
   clickCounter++;
   if (clickCounter % 2 === 0) {
     score.innerHTML = clickCounter / 2;
@@ -92,13 +93,9 @@ function display() {
 
 
     card.addEventListener('click', function () {
-      if (guessArr.length >= 2) {
-        setTimeout(function () {
-          this.children[1].style.visibility = "hidden";
-          cardObj = { cardColor: this.id, cardClass: this.classList };
-          guessArr.push(cardObj);
-          updateScore();
-        }, 1500);
+      console.log(pairCounter);
+      if (pairCounter > 0) {
+        return;
       } else {
         this.children[1].style.visibility = "hidden";
         cardObj = { cardColor: this.id, cardClass: this.classList };
